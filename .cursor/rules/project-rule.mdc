@@ -1,317 +1,110 @@
----
-description: Next.js + microCMS ポートフォリオサイトのプロジェクトルール
-globs: ['**/*.{ts,tsx,js,jsx,md,json}']
-alwaysApply: true
----
+## Project Rules (Coding Only)
 
-# Next.js + microCMS ポートフォリオサイト プロジェクトルール
-
-## 📁 ディレクトリ構造規約
-
-### `/src/app/` - App Router 構造
-
-- `(site)/` - サイトのメインページ群（ルートグループ）
-- `layout.tsx` - ルートレイアウト（日本語設定、フォント、共通レイアウト）
-- 各ページは `page.tsx` として配置
-
-### `/src/components/` - 再利用可能なコンポーネント
-
-- `layout/` - ヘッダー、フッターなどのレイアウトコンポーネント
-- 機能別にディレクトリを作成（例：`ui/`, `forms/`）
-- コンポーネント名は PascalCase
-
-### `/src/features/` - 機能別ビジネスロジック
-
-- `works/` - 作品関連の型定義、API、ユーティリティ
-- 機能ごとに独立したディレクトリ構成
-- `api.ts` - データ取得ロジック
-- `types.ts` - 型定義
-- `components/` - 機能専用コンポーネント（必要に応じて）
-
-### `/src/lib/` - 外部ライブラリとの統合
-
-- `microcms.ts` - microCMS クライアント設定とユーティリティ関数
-
-### `/src/types/` - 共通型定義
-
-- `index.ts` - プロジェクト全体で使用する基本型
-
-### `/src/utils/` - 汎用ユーティリティ関数
-
-- 機能別にファイル分割（`date.ts`, `string.ts`など）
-- `index.ts` - 共通エクスポート
-
-### `/src/styles/` - スタイリング
-
-- `globals.css` - Tailwind ディレクティブとグローバルスタイル
-
-## 🎯 コーディング規約
-
-### TypeScript
-
-- **厳密な型定義**: `strict: true` 設定を維持
-- **型インポート**: `type` キーワードを使用（`import type { Metadata } from 'next'`）
-- **非同期関数**: async/await を使用、適切なエラーハンドリング
-- **型ガード**: 実行時の型安全性を確保
-
-### ファイル命名規則
-
-- **コンポーネント**: PascalCase（`Header.tsx`, `WorkCard.tsx`）
-- **ページ**: `page.tsx`（App Router 規約）
-- **ユーティリティ**: camelCase（`dateUtils.ts`, `stringHelpers.ts`）
-- **型定義**: `types.ts` または `index.ts`
-
-### インポート規約
-
-```typescript
-// 1. Next.js関連
-import type { Metadata } from 'next';
-import Link from 'next/link';
-
-// 2. 外部ライブラリ
-import { createClient } from 'microcms-js-sdk';
-
-// 3. 内部インポート（@/エイリアス使用）
-import { Header } from '@/components/layout/Header';
-import type { Work } from '@/features/works/types';
-import { formatDate } from '@/utils/date';
-```
-
-### コンポーネント定義
-
-```typescript
-// Named export推奨
-export const ComponentName = () => {
-  return (
-    // JSX
-  );
-};
-
-// ページコンポーネントはdefault export
-export default function PageName() {
-  return (
-    // JSX
-  );
-}
-```
-
-## 🌍 microCMS 統合規約
-
-### API 設計
-
-- **エンドポイント定数**: `features/*/api.ts` で定義
-- **エラーハンドリング**: try-catch 必須、ログ出力とユーザーフレンドリーなエラーメッセージ
-- **型安全**: レスポンスは適切な型でキャスト
-
-### 環境変数
-
-```bash
-MICROCMS_SERVICE_DOMAIN=your-service-domain
-MICROCMS_API_KEY=your-api-key
-```
-
-### 共通関数使用
-
-- `getAllContents()` - 一覧取得
-- `getContentById()` - ID 指定取得
-- `getContentBySlug()` - スラッグ指定取得
-
-## 🎨 UI/UX 規約
-
-### Tailwind CSS
-
-- **ダークモード対応**: `dark:` プレフィックス使用
-- **レスポンシブ**: モバイルファースト設計
-- **カスタムカラー**: `tailwind.config.ts` で定義
-
-### アクセシビリティ
-
-- **セマンティック HTML**: 適切なタグ使用
-- **画像 alt 属性**: 必須設定
-- **フォーカス管理**: キーボードナビゲーション対応
-
-## 📄 ページ機能規約
-
-### メタデータ生成
-
-```typescript
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  // 動的メタデータ生成
-}
-```
-
-### 静的生成
-
-```typescript
-export async function generateStaticParams() {
-  // 静的パラメータ生成
-}
-```
-
-### エラーハンドリング
-
-- `notFound()` - 404 エラー
-- `try-catch` - API 呼び出し時必須
-- ユーザーフレンドリーなエラー表示
-
-## 🔧 開発ツール設定
-
-### パッケージ管理
-
-- **npm**: `package-lock.json` をコミット
-- **依存関係**: 明確な分離（dependencies vs devDependencies）
-
-### TypeScript 設定
-
-- **パスエイリアス**: `@/*` で `./src/*` をマッピング
-- **厳密チェック**: strict mode 有効
-
-### ESLint
-
-- Next.js 推奨設定を使用
-- カスタムルールは最小限
-- **重要なルール**:
-  - `@typescript-eslint/no-explicit-any`: `any` 型の使用を禁止
-  - `@next/next/no-html-link-for-pages`: 内部リンクは `<Link>` を使用
-  - `@next/next/no-img-element`: 画像は `<Image>` コンポーネントを使用
-  - `@typescript-eslint/no-unused-vars`: 未使用変数の検出
-
-## 📦 推奨パッケージ構成
-
-### 必須依存関係
-
-- `next`: ^15.5.2
-- `react`: ^19.1.0 ⚠️
-- `react-dom`: ^19.1.0 ⚠️
-- `microcms-js-sdk`: ^3.2.0
-- `tailwindcss`: ^4.1.12 ⚠️
-
-### 開発依存関係
-
-- `typescript`: ^5
-- `@types/node`: ^20
-- `@types/react`: ^19
-- `@types/react-dom`: ^19
-- `eslint`: ^9
-- `eslint-config-next`: 15.5.2
-- `@eslint/eslintrc`: ^3
-- `@tailwindcss/postcss`: ^4
-
-### ⚠️ バージョン互換性の注意点
-
-#### React 19 について
-
-- **現状**: React 19 は RC 版で、まだ正式リリース前
-- **互換性**: 一部のライブラリが React 19 に未対応の可能性
-- **推奨**: 安定性を重視する場合は React 18.x の使用を検討
-- **対応**: React 19 使用時は依存ライブラリの対応状況を事前確認
-
-#### Tailwind CSS 4 について
-
-- **現状**: アルファ版から安定版に移行中（4.1.12）
-- **ブラウザサポート**: Safari 16.4+、Chrome 111+、Firefox 128+
-- **破壊的変更**: `@tailwind` ディレクティブの廃止、一部ユーティリティの削除
-- **推奨**: レガシーブラウザサポートが必要な場合は Tailwind CSS 3.4.x を使用
-
-#### 安定版構成の提案
-
-```json
-{
-  "dependencies": {
-    "next": "^15.5.2",
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0",
-    "microcms-js-sdk": "^3.2.0",
-    "tailwindcss": "^3.4.0"
-  }
-}
-```
-
-## 🚀 パフォーマンス規約
-
-### 画像最適化
-
-- Next.js の`Image`コンポーネント使用
-- WebP/AVIF 対応
-- 適切なサイズ指定
-
-### 静的生成活用
-
-- `generateStaticParams()` で事前生成
-- ISR の適切な活用
-
-### バンドルサイズ最適化
-
-- 動的インポート活用
-- 未使用コードの除去
-
-## 🔒 セキュリティ規約
-
-### 環境変数管理
-
-- `.env.local` を gitignore
-- API キーの適切な管理
-
-### XSS 対策
-
-- `dangerouslySetInnerHTML` 使用時は信頼できるコンテンツのみ
-- ユーザー入力の適切なサニタイズ
+前提: Next.js (App Router) + TypeScript + Tailwind CSS + shadcn/ui + microCMS
 
 ---
 
-## 🔍 開発・デプロイガイドライン
+### 1. ディレクトリ/ファイル構造と命名規則
 
-### 開発環境のセットアップ
+- **エイリアス**: `@/*` は `src/*` を指す。相対参照は 2 階層以上を避け、極力 `@/` を使用。
+- **層構造**:
+  - `src/app/`:
+    - ルーティング（App Router）。フォルダ名は URL に一致。`(site)` のようなグルーピングは OK。
+    - ページは原則サーバーコンポーネント。クライアントが必要な場合のみ `"use client"` を先頭に付与。
+    - ルートごとのデータ取得はサーバー側で行い、`features/*/api.ts` 経由で呼ぶ。
+  - `src/components/`:
+    - **純粋 UI 再利用コンポーネント**を置く。粒度は小～中。ドメイン知識は含めない。
+    - サブフォルダは役割単位（例: `layout/`, `form/`, `data-display/`）。
+  - `src/features/<domain>/`:
+    - ドメイン単位の集約。例: `works/`。
+    - `api.ts`（ドメイン用 fetch 集約）/ `types.ts`（ドメイン型）/ 必要に応じて `components/` を配置。
+  - `src/lib/`:
+    - 外部サービス・クライアントの初期化や共通ラッパ（例: `microcms.ts`）。
+  - `src/types/`:
+    - 横断的・共通の型。ドメイン固有は `features/*/types.ts` に置き、必要に応じて再エクスポート。
+  - `src/utils/`:
+    - 副作用のない純関数。用途別ファイルに分割し、`src/utils/index.ts` でサーフェスを整理。
+  - `src/styles/`:
+    - グローバル CSS と Tailwind 設定拡張。コンポーネント内は可能な限りユーティリティクラスで完結。
+- **命名**:
+  - ディレクトリ/ファイルは `kebab-case`。React コンポーネントファイル名のみ `PascalCase.tsx` を許可。
+  - 型は `PascalCase`、変数/関数は `camelCase`、定数は `UPPER_SNAKE_CASE`（ドメインのエンドポイント名なども）。
+  - API 関数は動詞始まり（例: `getWorks`, `getWorkBySlug`）。
 
-```bash
-# 依存関係インストール
-npm install
+### 2. React コンポーネントの書き方
 
-# 開発サーバー起動
-npm run dev
+- **エクスポート**:
+  - 単一コンポーネント/フックは `export const` の名前付きエクスポート。デフォルトエクスポートは使用しない。
+- **Props**:
+  - Props は `interface` または `type` で `PascalCase` 命名（例: `WorkCardProps`）。
+  - 可能な限り必須/任意を厳密化。`?` よりもユニオンで意味を表現。
+  - 子要素は `children?: React.ReactNode`。
+- **コンポーネント種別**:
+  - 既定はサーバーコンポーネント。クライアントが必要な条件：イベントハンドラ、`useState`/`useEffect`、ブラウザ API 依存、shadcn の一部インタラクティブ UI。
+  - クライアント化はファイル先頭にのみ `"use client"` を宣言。
+- **アクセシビリティ**:
+  - 画像は `alt` 必須、インタラクティブ要素には適切な `role`/`aria-*` を付与。
+- **エラーハンドリング**:
+  - フェッチ失敗時は上位でハンドル。UI ではフォールバック表示を実装（例: 空配列時のプレースホルダ）。
+- **フォルダ単位の公開面**:
+  - `index.ts` を置いて公開 API を明示的に制御（`export { ComponentA } from './ComponentA'`）。
 
-# ビルドテスト
-npm run build
+### 3. Tailwind / shadcn/ui の方針
 
-# リンター実行
-npm run lint
-```
+- **Tailwind 基本**:
+  - スタイルはまずユーティリティクラスで構築。複雑化したらコンポーネント化。
+  - 任意の再利用スタイルは `@layer components` に抽出、または `cn()` でプリセット化。
+- **命名と順序**:
+  - クラス順序は論理グループで整列：レイアウト → サイズ → 余白 → フレックス/グリッド → タイポ → 色 → 効果。
+- **ダークモード**:
+  - 変数は `:root` で宣言済み。必要に応じ `dark:` プレフィックスを使用。
+- **shadcn/ui**:
+  - 追加コンポーネントは `components/ui/` に設置。自動生成後もプロジェクト規約（命名/エクスポート/型）に合わせて調整。
+  - スタイリングは極力プロップスとユーティリティクラスで。大規模上書きは避ける。
+  - ヘルパ `cn(...classes)` を用意し、条件クラス分岐を簡潔に（`classnames`相当）。
 
-### 環境変数設定
+### 4. microCMS API 接続のルール
 
-`.env.local` ファイルを作成：
+- **クライアント**:
+  - `src/lib/microcms.ts` にて `createClient` を一元管理。`MICROCMS_SERVICE_DOMAIN` と `MICROCMS_API_KEY` が必須。エラー時は起動時に例外。
+- **ドメイン API**:
+  - ドメイン固有の取得関数は `src/features/<domain>/api.ts` に集約。
+  - 取得関数は戻り値をドメイン型にキャスト/整形して返す（UI はドメイン型のみを参照）。
+  - エラーログは `console.error`、上位にはメッセージ付き `Error` or `null/[]` を返す方針を統一。
+- **型定義**:
+  - 共通型は `src/types/`、ドメイン型は `src/features/<domain>/types.ts`。必要に応じ `src/types/index.ts` から再エクスポート。
+  - microCMS のレスポンス基本型は `MicroCMSResponse<T>` / `MicroCMSContentBase` を使用。
+- **クエリ/フィルタ**:
+  - ページングは `limit`/`offset` を引数化。`orders` などの既定は lib 側でデフォルト実装を持つ。
+  - スラッグ検索などのクエリは lib 側に共通関数（`getContentBySlug`）を置き再利用。
+- **キャッシュ**:
+  - サーバーコンポーネントのフェッチはデフォルトで SSR。必要に応じて `revalidate` の設定をページ側で指定。
 
-```bash
-MICROCMS_SERVICE_DOMAIN=your-service-domain
-MICROCMS_API_KEY=your-api-key
-```
+### 5. コーディングスタイル
 
-### よくあるビルドエラーと対処法
+- **言語/型**:
+  - TypeScript は `strict: true` 前提。`any` は禁止。必要な場合は限定的な型ガードを実装。
+  - 関数は動詞句、変数は名詞句。略語は避け、意味のある名称を使用。
+- **コメント**:
+  - 明確な意図がある場合のみ。なぜ（Why）を短く上に記述。自明なコメントは書かない。
+- **エラーハンドリング**:
+  - 外部 I/O 境界（fetch, SDK）は `try/catch`。UI 層ではエラー文言をユーザー向けに調整。
+- **フォーマット/リンティング**:
+  - `eslint-config-next` を継続利用。エラーはゼロを維持。
+  - import 並びは自動整形に従う。未使用の import/変数はコミット前に削除。
+- **アクセシビリティ/国際化**:
+  - テキストは日本語デフォルト。将来の i18n に備え、ハードコード文面は最小限に。
 
-#### TypeScript エラー
+### 6. 具体例（本プロジェクトに即した）
 
-- `any` 型の使用は避け、適切な型定義を行う
-- 未使用変数は削除するか、アンダースコア（`_`）プレフィックスを付ける
+- `src/lib/microcms.ts`:
+  - `getAllContents(endpoint, limit, offset)` は `orders: '-publishedAt'` を既定とする。
+  - `getContentBySlug(endpoint, slug)` を共通化し、features で再利用。
+- `src/features/works/api.ts`:
+  - `WORKS_ENDPOINT` は `UPPER_SNAKE_CASE`。
+  - UI 層は `Work`/`WorksResponse` のみ参照し、microCMS の生データへの依存を避ける。
 
-#### Next.js 固有エラー
+### 7. PR/コミット運用（簡易）
 
-- 内部リンクは `<a>` タグではなく `<Link>` コンポーネントを使用
-- 画像は `<img>` タグではなく `<Image>` コンポーネントを使用
-- 動的ルートでの `generateStaticParams` で適切な型を指定
-
-#### microCMS 関連
-
-- API 呼び出し時は必ず try-catch でエラーハンドリング
-- レスポンスの型キャストは慎重に行う
-- `notFound()` による適切な 404 処理
-
-## ✅ コミット前チェックリスト
-
-- [ ] TypeScript 型エラーなし（`npm run build` で確認）
-- [ ] ESLint エラーなし（`npm run lint` で確認）
-- [ ] ビルド成功（`npm run build` で確認）
-- [ ] 開発サーバーでの動作確認（`npm run dev`）
-- [ ] レスポンシブデザイン確認
-- [ ] ダークモード対応確認
-- [ ] アクセシビリティ基本チェック
-- [ ] microCMS データ取得の動作確認
+- 1 コミット 1 論点。型・命名・フォーマット修正は機能改修と分離。
+- 変更箇所には根拠（仕様/ルール）を PR 説明に 1-2 行で明記。
