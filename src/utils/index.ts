@@ -20,3 +20,6 @@ export {
   kebabToCamel,
   isEmpty,
 } from './string';
+
+// スタイル関連
+export { cn } from './style';
