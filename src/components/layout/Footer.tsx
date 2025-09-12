@@ -1,3 +1,7 @@
+'use client';
+
+"use client";
+
 export const Footer = () => {
   return (
     <footer className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 mt-auto">

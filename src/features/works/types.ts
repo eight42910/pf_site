@@ -8,137 +8,49 @@ export interface MicroCMSImage {
 }
 
 /**
- * Workカテゴリー型
+ * カテゴリーの型 (microCMSの'categories' APIスキーマに対応)
  */
-export interface WorkCategory {
+export interface Category {
   id: string;
-  name: string;
-  slug: string;
-  color?: string;
-  description?: string;
-}
-
-/**
- * Workタグ型
- */
-export interface WorkTag {
-  id: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  revisedAt: string;
   name: string;
   slug: string;
 }
 
 /**
- * Work型（microCMSの基本フィールドを含む）
+ * 制作実績の型 (microCMSの'works' APIスキーマに対応)
  */
 export interface Work {
+  // microCMSの基本フィールド
   id: string;
   createdAt: string;
   updatedAt: string;
   publishedAt?: string;
   revisedAt?: string;
 
-  // コンテンツフィールド
+  // --- 必須フィールド ---
   title: string;
   slug: string;
-  description?: string;
-  content?: string;
-  eyecatch?: MicroCMSImage;
+  thumb: MicroCMSImage;
+  body: string; // リッチエディタ
+  project_type: string; // 案件種別 (例: 'クライアントワーク')
+  category: Category;   // 関連付けられたカテゴリ
 
-  // Work固有フィールド
-  category?: WorkCategory;
-  tags?: WorkTag[];
-  featured?: boolean;
-  status?: 'draft' | 'published' | 'archived';
-
-  // プロジェクト詳細
-  client?: string;
-  role?: string;
-  duration?: string;
-  technologies?: string[];
-  projectUrl?: string;
-  githubUrl?: string;
-
-  // SEO
-  metaTitle?: string;
-  metaDescription?: string;
-  ogImage?: MicroCMSImage;
+  // --- オプショナルフィールド ---
+  excerpt?: string;
+  date?: string; // 制作日
+  site_url?: string; // 公開URL
 }
 
 /**
- * Works一覧レスポンス型
+ * Works一覧APIのレスポンス型
  */
 export interface WorksResponse {
   contents: Work[];
   totalCount: number;
   offset: number;
   limit: number;
-}
-
-/**
- * Work一覧ページのProps型
- */
-export interface WorksPageProps {
-  searchParams?: {
-    page?: string;
-    category?: string;
-    tag?: string;
-    search?: string;
-  };
-}
-
-/**
- * Work詳細ページのProps型
- */
-export interface WorkDetailPageProps {
-  params: Promise<{
-    slug: string;
-  }>;
-}
-
-/**
- * Workカード表示用の型（一覧ページなどで使用）
- */
-export interface WorkCardData {
-  id: string;
-  title: string;
-  slug: string;
-  description?: string;
-  eyecatch?: MicroCMSImage;
-  category?: WorkCategory;
-  tags?: WorkTag[];
-  publishedAt?: string;
-  featured?: boolean;
-}
-
-/**
- * フィルター用の型
- */
-export interface WorksFilter {
-  category?: string;
-  tags?: string[];
-  status?: Work['status'];
-  featured?: boolean;
-  dateRange?: {
-    start?: string;
-    end?: string;
-  };
-}
-
-/**
- * ソート用の型
- */
-export interface WorksSort {
-  field: 'publishedAt' | 'createdAt' | 'updatedAt' | 'title';
-  order: 'asc' | 'desc';
-}
-
-/**
- * Works検索用パラメーター型
- */
-export interface WorksSearchParams {
-  query?: string;
-  limit?: number;
-  offset?: number;
-  filter?: WorksFilter;
-  sort?: WorksSort;
 }
