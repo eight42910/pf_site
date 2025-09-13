@@ -1,20 +1,20 @@
 import { getWorks } from "@/features/works/api";
+import { WorkCard } from "@/features/works/components/WorkCard";
 
 export default async function Home() {
-  // サーバーサイドでデータを取得します
   const works = await getWorks();
 
   return (
-    <div>
-      <h1>制作実績</h1>
+    <div className="container mx-auto px-4 py-12">
+      <h1 className="text-3xl font-bold mb-8 text-center">制作実績</h1>
       {works.contents.length > 0 ? (
-        <ul>
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {works.contents.map((work) => (
-            <li key={work.id}>{work.title}</li>
+            <WorkCard key={work.id} work={work} />
           ))}
-        </ul>
+        </div>
       ) : (
-        <p>制作実績はまだありません。</p>
+        <p className="text-center text-gray-500">制作実績はまだありません。</p>
       )}
     </div>
   );

@@ -37,7 +37,8 @@ export interface Work {
   thumb: MicroCMSImage;
   body: string; // リッチエディタ
   project_type: string; // 案件種別 (例: 'クライアントワーク')
-  category: Category;   // 関連付けられたカテゴリ
+  technologies?: string[]; // 使用技術
+  category: Category; // 関連付けられたカテゴリ
 
   // --- オプショナルフィールド ---
   excerpt?: string;
